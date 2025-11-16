@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: workflow-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: workflow-database
+          property: connectionString
+
+databases:
+  - name: workflow-database
+    plan: free
+    databaseName: taskflow
+    user: workflow_user
+
+
+
+postgresql://workflow_user:rsVhSCjDOEPSYcDKbhdJpUwLhzQOAprF@dpg-d4corfadbo4c73dd4u3g-a.oregon-postgres.render.com/taskflow_xpa2
