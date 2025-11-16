@@ -12,8 +12,12 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Email and password required" });
     }
 
-    const result = await db.query("SELECT * FROM users WHERE name = $1", [
-      email,
+    // Normalize email
+    const normalizedEmail = email.toLowerCase();
+
+    // Check user by email
+    const result = await db.query("SELECT * FROM users WHERE email = $1", [
+      normalizedEmail,
     ]);
 
     if (result.rows.length === 0) {
@@ -21,16 +25,19 @@ router.post("/", async (req, res) => {
     }
 
     const user = result.rows[0];
-    const match = await bcrypt.compare(password, user.password);
 
+    // Compare password
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+    // Remove password field
     const { password: _, ...safeUser } = user;
 
     res.json({ message: "Login successful", user: safeUser });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
