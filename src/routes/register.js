@@ -1,15 +1,16 @@
-import express from "express";
-import db from "../db/client.js";
-import bcrypt from "bcrypt";
-
-const router = express.Router();
-
 router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ error: "Please provide a valid email address" });
     }
 
     const existingUser = await db.query("SELECT * FROM users WHERE name = $1", [
@@ -32,8 +33,7 @@ router.post("/", async (req, res) => {
       user: result.rows[0],
     });
   } catch (error) {
+    console.error("Registration error:", error); // optional: for debugging
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-export default router;
