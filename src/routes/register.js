@@ -1,3 +1,9 @@
+import express from "express";
+import db from "../db/client.js";
+import bcrypt from "bcrypt";
+
+const router = express.Router();
+
 router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -37,3 +43,5 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+export default router;
