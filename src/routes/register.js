@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
       user: result.rows[0],
     });
   } catch (error) {
-    console.error("Registration error:", error); // optional: for debugging
+    console.error("Registration error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
